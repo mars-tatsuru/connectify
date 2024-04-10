@@ -19,6 +19,13 @@ export default defineNuxtConfig({
     // pageTransition: { name: "page", mode: "out-in" },
     // layoutTransition: { name: "layout", mode: "out-in" },
   },
+  modules: ["nuxt-primevue"],
+  primevue: {},
+  css: [
+    "primevue/resources/themes/aura-light-green/theme.css",
+    // icon
+    "primeicons/primeicons.css",
+  ],
   // role of rendering
   // routeRules: {
   //   // Generated at build time for SEO purpose
