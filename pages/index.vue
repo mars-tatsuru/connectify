@@ -5,6 +5,8 @@
   // definePageMeta({
   //   layout: false,
   // });
+
+  const { data } = await useFetch("/api/test");
 </script>
 
 <template>
@@ -12,6 +14,7 @@
     <h1>Welcome to the homepage</h1>
     <AppAlert> This is an auto-imported component </AppAlert>
     <!-- <button @click="enableCustomLayout">Update layout</button> -->
+    <p>{{ data?.hello }}</p>
     <NuxtLink to="/about">About page</NuxtLink>
   </div>
 </template>
