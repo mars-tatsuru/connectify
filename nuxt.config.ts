@@ -10,4 +10,24 @@ export default defineNuxtConfig({
       },
     },
   },
+  app: {
+    head: {
+      charset: "utf-8",
+      viewport: "width=device-width, initial-scale=1",
+    },
+    // animation of page transition
+    // pageTransition: { name: "page", mode: "out-in" },
+    // layoutTransition: { name: "layout", mode: "out-in" },
+  },
+  // role of rendering
+  // routeRules: {
+  //   // Generated at build time for SEO purpose
+  //   "/": { prerender: true },
+  //   // Cached for 1 hour
+  //   "/api/*": { cache: { maxAge: 60 * 60 } },
+  //   // Redirection to avoid 404
+  //   "/old-page": {
+  //     redirect: { to: "/new-page", statusCode: 302 },
+  //   },
+  // },
 });
