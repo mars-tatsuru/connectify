@@ -1,6 +1,4 @@
 <script setup lang="ts">
-  import { routerKey } from "vue-router";
-
   const mainMenu = ref([
     {
       separator: true,
@@ -8,12 +6,6 @@
     {
       label: "Menu",
       items: [
-        {
-          label: "Home",
-          icon: "pi pi-home",
-          shortcut: "⌘+N",
-          route: "/",
-        },
         {
           label: "About",
           icon: "pi pi-info-circle",
@@ -32,14 +24,16 @@
     },
   ]);
 
+  const store = useMainStore();
+
   const route = useRoute();
   const router = useRouter();
-
   const currentPath = ref<string>(route.path);
 
   // ボタンを押したあと、遷移したページのpathを取得
   router.afterEach((to, from) => {
     currentPath.value = to.path;
+    store.currentPathName = to.path;
   });
 </script>
 

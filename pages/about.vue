@@ -2,9 +2,9 @@
 
 <template>
   <section>
-    <p>This page will be About.</p>
-    <NuxtLink to="/">top page</NuxtLink>
+    <h1>Welcome to the Connectify</h1>
+    <NuxtLink to="/about">About page</NuxtLink>
   </section>
 </template>
 
-<style></style>
+<style lang="scss"></style>

@@ -1,174 +1,61 @@
 <script setup lang="ts">
-  import { ref } from "vue";
+  const store = useMainStore();
 
-  const items = ref([
-    {
-      label: "Furniture",
-      icon: "pi pi-box",
-      items: [
-        [
-          {
-            label: "Living Room",
-            items: [
-              { label: "Accessories" },
-              { label: "Armchair" },
-              { label: "Coffee Table" },
-              { label: "Couch" },
-              { label: "TV Stand" },
-            ],
-          },
-        ],
-        [
-          {
-            label: "Kitchen",
-            items: [
-              { label: "Bar stool" },
-              { label: "Chair" },
-              { label: "Table" },
-            ],
-          },
-          {
-            label: "Bathroom",
-            items: [{ label: "Accessories" }],
-          },
-        ],
-        [
-          {
-            label: "Bedroom",
-            items: [
-              { label: "Bed" },
-              { label: "Chaise lounge" },
-              { label: "Cupboard" },
-              { label: "Dresser" },
-              { label: "Wardrobe" },
-            ],
-          },
-        ],
-        [
-          {
-            label: "Office",
-            items: [
-              { label: "Bookcase" },
-              { label: "Cabinet" },
-              { label: "Chair" },
-              { label: "Desk" },
-              { label: "Executive Chair" },
-            ],
-          },
-        ],
-      ],
-    },
-    {
-      label: "Electronics",
-      icon: "pi pi-mobile",
-      items: [
-        [
-          {
-            label: "Computer",
-            items: [
-              { label: "Monitor" },
-              { label: "Mouse" },
-              { label: "Notebook" },
-              { label: "Keyboard" },
-              { label: "Printer" },
-              { label: "Storage" },
-            ],
-          },
-        ],
-        [
-          {
-            label: "Home Theather",
-            items: [
-              { label: "Projector" },
-              { label: "Speakers" },
-              { label: "TVs" },
-            ],
-          },
-        ],
-        [
-          {
-            label: "Gaming",
-            items: [
-              { label: "Accessories" },
-              { label: "Console" },
-              { label: "PC" },
-              { label: "Video Games" },
-            ],
-          },
-        ],
-        [
-          {
-            label: "Appliances",
-            items: [
-              { label: "Coffee Machine" },
-              { label: "Fridge" },
-              { label: "Oven" },
-              { label: "Vaccum Cleaner" },
-              { label: "Washing Machine" },
-            ],
-          },
-        ],
-      ],
-    },
-    {
-      label: "Sports",
-      icon: "pi pi-clock",
-      items: [
-        [
-          {
-            label: "Football",
-            items: [
-              { label: "Kits" },
-              { label: "Shoes" },
-              { label: "Shorts" },
-              { label: "Training" },
-            ],
-          },
-        ],
-        [
-          {
-            label: "Running",
-            items: [
-              { label: "Accessories" },
-              { label: "Shoes" },
-              { label: "T-Shirts" },
-              { label: "Shorts" },
-            ],
-          },
-        ],
-        [
-          {
-            label: "Swimming",
-            items: [
-              { label: "Kickboard" },
-              { label: "Nose Clip" },
-              { label: "Swimsuits" },
-              { label: "Paddles" },
-            ],
-          },
-        ],
-        [
-          {
-            label: "Tennis",
-            items: [
-              { label: "Balls" },
-              { label: "Rackets" },
-              { label: "Shoes" },
-              { label: "Training" },
-            ],
-          },
-        ],
-      ],
-    },
-  ]);
+  type BreadcrumbItem = { icon?: string; label?: string; route?: string };
+
+  const home = ref<BreadcrumbItem>({
+    icon: "pi pi-home",
+    route: "/",
+  });
+
+  const items = ref<BreadcrumbItem[]>([]);
+
+  watch(
+    () => store.currentPathName,
+    (newVal) => {
+      items.value = [];
+      if (!newVal) return;
+      const paths = newVal.split("/");
+
+      paths.forEach((path, index) => {
+        if (path === "") return;
+        items.value?.push({
+          label: path,
+        });
+      });
+    }
+  );
 </script>
 
 <template>
   <header>
-    <!-- <Breadcrumb :home="home" :model="items" /> -->
-    <!-- <Menubar :model="items" /> -->
-    <!-- <MegaMenu :model="items" /> -->
+    <Breadcrumb :home="home" :model="items">
+      <template #item="{ item, props }">
+        <NuxtLink
+          v-if="item.route"
+          v-slot="{ href, navigate }"
+          :to="item.route"
+          custom
+        >
+          <a :href="href" v-bind="props.action" @click="navigate">
+            <span :class="[item.icon, 'text-color']" />
+            <span class="text-primary font-semibold">{{ item.label }}</span>
+          </a>
+        </NuxtLink>
+        <a v-else :href="item.url" :target="item.target" v-bind="props.action">
+          <span class="text-color">{{ item.label }}</span>
+        </a>
+      </template>
+    </Breadcrumb>
   </header>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+  header {
+    width: calc(100% - 250px);
+    position: fixed;
+    top: 0;
+    right: 0;
+    border: 1px solid #e0e0e0;
+  }
+</style>

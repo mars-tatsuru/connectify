@@ -10,6 +10,6 @@
 
 <style scoped lang="scss">
   .container {
-    padding: 0 0 0 270px;
+    padding: 60px 0 0 270px;
   }
 </style>
