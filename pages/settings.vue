@@ -2,7 +2,7 @@
 
 <template>
   <section>
-    <p>This page will be About.</p>
+    <p>This page will be Settings.</p>
     <NuxtLink to="/">top page</NuxtLink>
   </section>
 </template>

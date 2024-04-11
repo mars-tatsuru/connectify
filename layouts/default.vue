@@ -1,7 +1,15 @@
+<script setup lang="ts"></script>
+
 <template>
-  <div>
-    <AppHeader />
+  <AppHeader />
+  <div class="container">
     <slot />
-    <AppFooter />
   </div>
+  <AppSidebar />
 </template>
+
+<style scoped lang="scss">
+  .container {
+    padding: 0 0 0 270px;
+  }
+</style>

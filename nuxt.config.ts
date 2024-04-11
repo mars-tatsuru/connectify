@@ -20,7 +20,11 @@ export default defineNuxtConfig({
     // layoutTransition: { name: "layout", mode: "out-in" },
   },
   modules: ["nuxt-primevue"],
-  primevue: {},
+  primevue: {
+    options: {
+      unstyled: false,
+    },
+  },
   css: [
     "primevue/resources/themes/aura-light-green/theme.css",
     // icon

@@ -167,7 +167,7 @@
   <header>
     <!-- <Breadcrumb :home="home" :model="items" /> -->
     <!-- <Menubar :model="items" /> -->
-    <MegaMenu :model="items" />
+    <!-- <MegaMenu :model="items" /> -->
   </header>
 </template>
 
