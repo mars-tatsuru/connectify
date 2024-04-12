@@ -19,7 +19,12 @@ export default defineNuxtConfig({
     // pageTransition: { name: "page", mode: "out-in" },
     // layoutTransition: { name: "layout", mode: "out-in" },
   },
-  modules: ["nuxt-primevue", "@pinia/nuxt"],
+  modules: ["nuxt-primevue", "@pinia/nuxt", "nuxt-microcms-module"],
+  microCMS: {
+    serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN,
+    apiKey: process.env.MICROCMS_API_KEY,
+    target: process.env.NODE_ENV === "production" ? "server" : "all",
+  },
   primevue: {
     options: {
       unstyled: false,

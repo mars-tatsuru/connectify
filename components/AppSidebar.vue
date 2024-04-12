@@ -7,10 +7,16 @@
       label: "Menu",
       items: [
         {
-          label: "About",
+          label: "Video Trimming",
           icon: "pi pi-info-circle",
           shortcut: "⌘+S",
-          route: "/about",
+          route: "/edit",
+        },
+        {
+          label: "Summary History",
+          icon: "pi pi-server",
+          shortcut: "⌘+S",
+          route: "/history",
         },
       ],
     },
@@ -22,6 +28,11 @@
       icon: "pi pi-cog",
       route: "/settings",
     },
+    // {
+    //   label: "Logout",
+    //   icon: "pi pi-sign-out",
+    //   route: "/logout",
+    // },
   ]);
 
   const store = useMainStore();

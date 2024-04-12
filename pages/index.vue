@@ -1,9 +1,28 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import MainTitle from "@/components/shared/MainTitle.vue";
+
+  type News = {
+    title?: string;
+    content?: string;
+  };
+
+  const { data: news } = await useMicroCMSGetList<News>({
+    endpoint: "news",
+    queries: { limit: 10 },
+  });
+</script>
 
 <template>
-  <div>
-    <h1>Welcome to the Connectify</h1>
-    <NuxtLink to="/about">About page</NuxtLink>
+  <div class="main">
+    <div class="news">
+      <MainTitle title="News" />
+      <ul>
+        <li v-for="item in news?.contents" :key="item.id">
+          <h2>{{ item.title }}</h2>
+          <p>{{ item.content }}</p>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
