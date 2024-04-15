@@ -6,10 +6,43 @@
     content?: string;
   };
 
-  const { data: news } = await useMicroCMSGetList<News>({
+  const news = ref<any>(null);
+
+  const fetchData = async () => {
+    const { data } = await useMicroCMSGetList<News>({
+      endpoint: "news",
+      queries: { limit: 10 },
+    });
+
+    news.value = data;
+  };
+
+  const { data } = await useMicroCMSGetList<News>({
     endpoint: "news",
     queries: { limit: 10 },
   });
+
+  onMounted(async () => {
+    fetchData();
+    console.log(news);
+  });
+
+  // import type { MicroCMSImage } from "microcms-js-sdk";
+  // type Blog = {
+  //   title: string;
+  //   eyecatch: MicroCMSImage;
+  // };
+  // const queries = reactive({
+  //   q: "",
+  //   fields: ["id", "title", "eyecatch"],
+  // });
+  // const { data: blogs, refresh } = await useMicroCMSGetList<Blog>({
+  //   endpoint: "news",
+  //   queries,
+  // });
+  // watch(queries, () => {
+  //   refresh();
+  // });
 </script>
 
 <template>
@@ -27,3 +60,25 @@
 </template>
 
 <style lang="scss"></style>
+
+<!-- <template>
+  <input type="text" v-model="queries.q" />
+</template>
+<script setup lang="ts">
+  import type { MicroCMSImage } from "microcms-js-sdk";
+  type Blog = {
+    title: string;
+    eyecatch: MicroCMSImage;
+  };
+  const queries = reactive({
+    q: "",
+    fields: ["id", "title", "eyecatch"],
+  });
+  const { data: blogs, refresh } = await useMicroCMSGetList<Blog>({
+    endpoint: "news",
+    queries,
+  });
+  watch(queries, () => {
+    refresh();
+  });
+</script> -->
