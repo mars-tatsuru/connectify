@@ -4,7 +4,7 @@
       separator: true,
     },
     {
-      label: "Menu",
+      // label: "Menu",
       items: [
         {
           label: "Home",

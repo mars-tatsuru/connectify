@@ -29,7 +29,7 @@
 
 <template>
   <header>
-    <Breadcrumb :home="home" :model="items">
+    <Breadcrumb class="breadCrumb" :home="home" :model="items">
       <template #item="{ item, props }">
         <NuxtLink
           v-if="item.route"
@@ -53,10 +53,17 @@
 <style scoped lang="scss">
   header {
     width: calc(100% - 250px);
+    height: 50px;
     position: fixed;
     top: 0;
     right: 0;
     border: 1px solid #e0e0e0;
+    border-left: none;
+    background-color: #fff;
+
+    .breadCrumb {
+      height: 100%;
+    }
 
     .text-color-primary {
       color: $primary;

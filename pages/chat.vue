@@ -98,6 +98,7 @@
           padding: 0px 10px 10px 0px;
 
           .card {
+            width: 100%;
             margin-bottom: 10px;
             border-radius: 5px;
             cursor: pointer;
