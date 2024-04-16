@@ -43,7 +43,7 @@
           </a>
         </NuxtLink>
         <a v-else :href="item.url" :target="item.target" v-bind="props.action">
-          <span class="text-color">{{ item.label }}</span>
+          <span class="text-color-primary">{{ item.label }}</span>
         </a>
       </template>
     </Breadcrumb>
@@ -57,5 +57,9 @@
     top: 0;
     right: 0;
     border: 1px solid #e0e0e0;
+
+    .text-color-primary {
+      color: $primary;
+    }
   }
 </style>
