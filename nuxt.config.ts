@@ -19,12 +19,7 @@ export default defineNuxtConfig({
     // pageTransition: { name: "page", mode: "out-in" },
     // layoutTransition: { name: "layout", mode: "out-in" },
   },
-  modules: ["nuxt-primevue", "@pinia/nuxt", "nuxt-microcms-module"],
-  microCMS: {
-    serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN,
-    apiKey: process.env.MICROCMS_API_KEY,
-    // target: process.env.NODE_ENV === "production" ? "server" : "all",
-  },
+  modules: ["nuxt-primevue", "@pinia/nuxt"],
   primevue: {
     options: {
       unstyled: false,
@@ -37,6 +32,24 @@ export default defineNuxtConfig({
     // global css
     "./assets/scss/main.scss",
   ],
+  runtimeConfig: {
+    secret: {
+      microcms: {
+        domain: "oly7867sh3",
+        api: {
+          key: "3DdYSx2xto331BSkoxSSWq4OkpGqkamqXj87",
+        },
+      },
+    },
+    public: {
+      microcms: {
+        domain: "",
+        api: {
+          key: "",
+        },
+      },
+    },
+  },
   // role of rendering
   // routeRules: {
   //   // Generated at build time for SEO purpose

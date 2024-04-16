@@ -1,32 +1,22 @@
 <script setup lang="ts">
+  import type { TheNews } from "#build/components";
   import MainTitle from "@/components/shared/MainTitle.vue";
+  import type { News } from "@/types/microcms";
 
-  type News = {
-    title: string;
-    content: string;
+  type NewsData = {
+    data: News[];
   };
 
-  const newsData = ref();
-
-  onMounted(async () => {
-    const { data } = await useMicroCMSGetList<News>({
-      endpoint: "news",
-    });
-
-    newsData.value = data;
-  });
+  const newsData = ref<NewsData | null>(null);
+  const { data } = await useFetch("/api/microcms");
+  newsData.value = data.value as NewsData;
 </script>
 
 <template>
   <div class="main">
     <div class="news">
       <MainTitle title="News" />
-      <!-- <ul>
-        <li v-for="item in newsData.contents" :key="item.id">
-          <h2>{{ item.title }}</h2>
-          <p>{{ item.content }}</p>
-        </li>
-      </ul> -->
+      <TheNews :news="newsData" />
     </div>
   </div>
 </template>
