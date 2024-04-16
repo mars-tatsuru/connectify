@@ -1,7 +1,12 @@
 import { createClient } from "microcms-js-sdk";
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
+  const query = getQuery(event);
+
+  const endpoint = query.endpoint as string;
+  const limit = query.limit as number;
+  const offset = query.offset as number;
 
   const client = createClient({
     serviceDomain: runtimeConfig.secret.microcms.domain,
@@ -10,13 +15,16 @@ export default defineEventHandler(async () => {
 
   try {
     const res = await client.get({
-      endpoint: "news",
-      queries: { limit: 5 },
+      endpoint: endpoint,
+      queries: {
+        limit: limit,
+        offset: offset,
+      },
     });
 
     // データを返す
     return {
-      data: res.contents,
+      data: res,
     };
   } catch (err) {
     console.error(err);

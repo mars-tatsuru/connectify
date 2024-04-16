@@ -99,6 +99,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    background-color: #fff;
 
     &-top {
       width: 100%;
