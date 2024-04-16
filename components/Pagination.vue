@@ -1,6 +1,7 @@
 <script setup lang="ts">
   const props = defineProps<{
     totalCount: number;
+    offset: number;
   }>();
 
   const PER_PAGE = 5;
@@ -15,7 +16,11 @@
 
 <template>
   <div class="pagination">
-    <button class="pagination-item prev">
+    <button
+      class="pagination-item prev"
+      :class="{ disabled: offset === 0 }"
+      @click="handleClick(1)"
+    >
       <Icon name="ep:arrow-left" color="black" />
     </button>
     <button
@@ -26,7 +31,11 @@
     >
       {{ index }}
     </button>
-    <button class="pagination-item next">
+    <button
+      class="pagination-item next"
+      :class="{ disabled: offset >= totalCount - PER_PAGE }"
+      @click="handleClick(pageCount)"
+    >
       <Icon name="ep:arrow-right" color="black" />
     </button>
   </div>
@@ -46,6 +55,11 @@
       border-radius: 5px;
       background-color: #fff;
       cursor: pointer;
+
+      &.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+      }
     }
   }
 </style>

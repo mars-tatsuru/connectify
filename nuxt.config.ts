@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     // pageTransition: { name: "page", mode: "out-in" },
     // layoutTransition: { name: "layout", mode: "out-in" },
   },
+  // https://icones.js.org/
   modules: ["nuxt-primevue", "@pinia/nuxt", "nuxt-icon"],
   primevue: {
     options: {

@@ -48,6 +48,7 @@
     </ul>
     <Pagination
       :total-count="newsData?.data.totalCount"
+      :offset="offset"
       @page-click="onPageChange"
     />
   </div>
