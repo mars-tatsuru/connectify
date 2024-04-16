@@ -10,8 +10,7 @@
 
 <style scoped lang="scss">
   h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+    font-size: 30px;
     color: $primary;
   }
 </style>

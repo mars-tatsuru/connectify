@@ -39,7 +39,7 @@
 
 <template>
   <div class="news">
-    <MainTitle title="News" />
+    <MainTitle class="title" title="News" />
     <ul class="news-list">
       <li v-for="item in newsData?.data.contents" class="news-list__item">
         <h2>{{ item.title }}</h2>
@@ -60,6 +60,10 @@
     padding: 20px;
     border: 1px solid #e0e0e0;
     border-radius: 5px;
+
+    .title {
+      margin-bottom: 20px;
+    }
 
     .news-list {
       list-style: none;

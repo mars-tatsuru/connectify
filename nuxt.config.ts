@@ -49,6 +49,8 @@ export default defineNuxtConfig({
           key: "",
         },
       },
+      SUPABASE_URL: process.env.SUPABASE_URL,
+      SUPABASE_KEY: process.env.SUPABASE_KEY,
     },
   },
   // role of rendering

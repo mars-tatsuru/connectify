@@ -7,16 +7,28 @@
       label: "Menu",
       items: [
         {
-          label: "Video Trimming",
-          icon: "pi pi-info-circle",
+          label: "Home",
+          icon: "pi pi-home",
           shortcut: "⌘+S",
-          route: "/edit",
+          route: "/",
         },
+        // {
+        //   label: "Video Trimming",
+        //   icon: "pi pi-info-circle",
+        //   shortcut: "⌘+S",
+        //   route: "/edit",
+        // },
+        // {
+        //   label: "Summary History",
+        //   icon: "pi pi-server",
+        //   shortcut: "⌘+S",
+        //   route: "/history",
+        // },
         {
-          label: "Summary History",
+          label: "Chat",
           icon: "pi pi-server",
           shortcut: "⌘+S",
-          route: "/history",
+          route: "/chat",
         },
       ],
     },
@@ -122,6 +134,7 @@
         span {
           font-size: 20px;
           font-weight: 600;
+          color: $primary;
         }
       }
 
