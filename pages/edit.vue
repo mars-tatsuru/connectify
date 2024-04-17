@@ -2,7 +2,7 @@
 
 <template>
   <section>
-    <h1>Welcome to the Connectify</h1>
+    <h1>Connectify ~edit~</h1>
   </section>
 </template>
 
