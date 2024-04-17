@@ -10,7 +10,7 @@
 
 <style scoped lang="scss">
   .container {
-    padding: 65px 20px 0 270px;
+    padding: 65px 10px 0 260px;
     min-height: 100vh;
     background-color: $bgColor;
   }
