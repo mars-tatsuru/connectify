@@ -121,7 +121,7 @@
   .news {
     background-color: #fff;
     padding: 20px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid $borderColor;
     border-radius: 5px;
 
     .title {
@@ -136,7 +136,7 @@
       &__item {
         margin-bottom: 20px;
         padding-bottom: 10px;
-        border-bottom: 1px solid #e0e0e0;
+        border-bottom: 1px solid $borderColor;
 
         h2 {
           margin: 0;

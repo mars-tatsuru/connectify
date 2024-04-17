@@ -51,7 +51,7 @@
       width: 30px;
       height: 30px;
       margin: 0 5px;
-      border: 1px solid #e0e0e0;
+      border: 1px solid $borderColor;
       border-radius: 5px;
       background-color: #fff;
       cursor: pointer;

@@ -104,7 +104,7 @@
             cursor: pointer;
 
             &:hover {
-              background-color: #f3f3f3;
+              background-color: $buttonFocusColor;
             }
 
             .message {
@@ -138,7 +138,7 @@
           cursor: pointer;
 
           &:hover {
-            background-color: #f3f3f3;
+            background-color: $buttonFocusColor;
           }
 
           .message {
@@ -154,11 +154,11 @@
         left: 0;
         width: 100%;
         padding: 20px;
-        background-color: #f3f3f3;
+        background-color: $bgColor;
 
         textarea {
           width: 100%;
-          border: 1px solid #e0e0e0;
+          border: 1px solid $borderColor;
           border-radius: 5px;
           padding: 10px;
           resize: none;

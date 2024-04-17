@@ -133,7 +133,7 @@
     position: fixed;
     top: 0;
     right: 0;
-    border: 1px solid #e0e0e0;
+    border: 1px solid $borderColor;
     border-left: none;
     background-color: #fff;
 
@@ -149,14 +149,14 @@
         padding: 0;
 
         .home-icon {
-          color: #333;
+          color: $iconColor;
         }
       }
 
       .user-icon {
         cursor: pointer;
         background-color: transparent;
-        border: 1px solid #333;
+        border: 1px solid $borderColor;
         border-radius: 50%;
         width: 35px;
         height: 35px;
@@ -201,7 +201,7 @@
                 width: 100%;
                 height: 100%;
                 border-radius: 50%;
-                border: 1px solid #333;
+                border: 1px solid $borderColor;
 
                 img {
                   width: 100%;

@@ -12,6 +12,6 @@
   .container {
     padding: 65px 20px 0 270px;
     min-height: 100vh;
-    background-color: #f0f2fa;
+    background-color: $bgColor;
   }
 </style>

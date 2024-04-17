@@ -119,7 +119,7 @@
     width: 250px;
     height: 100vh;
     padding: 1rem 0.5rem;
-    border: 1px solid #e0e0e0;
+    border: 1px solid $borderColor;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -133,7 +133,7 @@
         display: flex;
         align-items: center;
         width: 100%;
-        color: #334155;
+        color: $iconColor;
         text-decoration: none;
         margin-bottom: 20px;
         padding: 0.2rem 1rem;
@@ -154,7 +154,7 @@
         display: flex;
         align-items: center;
         padding: 0.5rem 1rem;
-        color: #334155;
+        color: $iconColor;
         text-decoration: none;
 
         i {
@@ -162,7 +162,7 @@
         }
 
         &.active {
-          background-color: #f0f0f0;
+          background-color: $bgColor;
           border-radius: 2px;
         }
       }
