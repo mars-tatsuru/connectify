@@ -3,6 +3,7 @@
   import { getUserInfoOfGoogle } from "@/utils/operationUserInfo";
   const store = useMainStore();
   const router = useRouter();
+  const route = useRoute();
 
   type BreadcrumbItem = { icon?: string; label?: string; route?: string };
 
@@ -10,18 +11,18 @@
     icon: "pi pi-home",
     route: "/",
   });
-  const items = ref<BreadcrumbItem[]>([]);
+  const breadcrumbItem = ref<BreadcrumbItem[]>([]);
 
   watch(
     () => store.currentPathName,
     (newVal) => {
-      items.value = [];
+      breadcrumbItem.value = [];
       if (!newVal) return;
       const paths = newVal.split("/");
 
       paths.forEach((path, index) => {
         if (path === "") return;
-        items.value?.push({
+        breadcrumbItem.value?.push({
           label: path,
         });
       });
@@ -47,13 +48,22 @@
       userEmail.value = res.userEmail.value;
       userImage.value = res.userImage.value;
     });
+
+    // for breadcrumb
+    const paths = route.path.split("/").filter((path) => path !== "");
+    console.log(paths);
+    paths.forEach((path) => {
+      breadcrumbItem.value?.push({
+        label: path,
+      });
+    });
   });
 </script>
 
 <template>
   <header class="header">
     <div class="header-inner">
-      <Breadcrumb class="breadCrumb" :home="home" :model="items">
+      <Breadcrumb class="breadCrumb" :home="home" :model="breadcrumbItem">
         <template #item="{ item, props }">
           <NuxtLink
             v-if="item.route"
