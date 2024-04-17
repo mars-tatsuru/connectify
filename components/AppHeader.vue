@@ -47,11 +47,11 @@
       userName.value = res.userName.value;
       userEmail.value = res.userEmail.value;
       userImage.value = res.userImage.value;
+      store.userName = res.userName.value;
     });
 
     // for breadcrumb
     const paths = route.path.split("/").filter((path) => path !== "");
-    console.log(paths);
     paths.forEach((path) => {
       breadcrumbItem.value?.push({
         label: path,
@@ -136,6 +136,7 @@
     border: 1px solid $borderColor;
     border-left: none;
     background-color: #fff;
+    z-index: 100;
 
     &-inner {
       display: flex;
