@@ -1,6 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   // devtools: { enabled: true }
+  // set ssr to disabled for supabase login
+  ssr: false,
+  // routeRules: {
+  //   "/": { prerender: true },
+  // },
   vite: {
     css: {
       preprocessorOptions: {
@@ -12,15 +17,30 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      charset: "utf-8",
-      viewport: "width=device-width, initial-scale=1",
+      title: "Connectify",
+      meta: [
+        {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1",
+        },
+        {
+          charset: "utf-8",
+        },
+      ],
+      link: [],
+      style: [],
+      script: [],
+      noscript: [],
     },
-    // animation of page transition
-    // pageTransition: { name: "page", mode: "out-in" },
-    // layoutTransition: { name: "layout", mode: "out-in" },
   },
   // https://icones.js.org/
-  modules: ["nuxt-primevue", "@pinia/nuxt", "nuxt-icon"],
+  modules: [
+    "nuxt-primevue",
+    "@pinia/nuxt",
+    "nuxt-icon",
+    "@nuxtjs/supabase",
+    "@nuxt/image",
+  ],
   primevue: {
     options: {
       unstyled: false,
@@ -32,6 +52,7 @@ export default defineNuxtConfig({
     "primeicons/primeicons.css",
     // global css
     "./assets/scss/main.scss",
+    "~/assets/scss/animation.scss",
   ],
   runtimeConfig: {
     secret: {
@@ -53,15 +74,18 @@ export default defineNuxtConfig({
       SUPABASE_KEY: process.env.SUPABASE_KEY,
     },
   },
-  // role of rendering
-  // routeRules: {
-  //   // Generated at build time for SEO purpose
-  //   "/": { prerender: true },
-  //   // Cached for 1 hour
-  //   "/api/*": { cache: { maxAge: 60 * 60 } },
-  //   // Redirection to avoid 404
-  //   "/old-page": {
-  //     redirect: { to: "/new-page", statusCode: 302 },
-  //   },
-  // },
+  supabase: {
+    url: process.env.NUXT_PUBLIC_SUPABASE_URL,
+    key: process.env.NUXT_SECRET_SUPABASE_KEY,
+    redirectOptions: {
+      login: "/login",
+      callback: "",
+      exclude: [],
+    },
+    cookieOptions: {
+      maxAge: 60 * 60 * 8,
+      sameSite: "lax",
+      secure: true,
+    },
+  },
 });

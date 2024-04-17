@@ -76,7 +76,7 @@
 
 <style lang="scss">
   .chat {
-    min-height: calc(100vh - 70px);
+    min-height: calc(100vh - 75px);
     border-radius: 5px;
     background-color: #fff;
 

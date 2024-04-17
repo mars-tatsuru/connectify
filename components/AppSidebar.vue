@@ -26,9 +26,21 @@
         // },
         {
           label: "Chat",
-          icon: "pi pi-server",
+          icon: "pi pi-comments",
           shortcut: "⌘+S",
           route: "/chat",
+        },
+        {
+          label: "Interview",
+          icon: "pi pi-whatsapp",
+          shortcut: "⌘+S",
+          route: "/interview",
+        },
+        {
+          label: "Documents",
+          icon: "pi pi-file",
+          shortcut: "⌘+S",
+          route: "/documents",
         },
       ],
     },

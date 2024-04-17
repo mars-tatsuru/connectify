@@ -110,7 +110,7 @@
       </li>
     </ul>
     <Pagination
-      :total-count="newsData?.totalCount"
+      :total-count="newsData?.totalCount!"
       :offset="offset"
       @page-click="onPageChange"
     />
