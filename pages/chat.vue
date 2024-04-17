@@ -1,7 +1,10 @@
 <script setup lang="ts">
   const chatHistoryData = ref<ChatData[]>();
+  const chatMainData = ref<ChatData[]>();
   const supabase = useSupabaseClient();
   const store = useMainStore();
+
+  const fetchChatDataFlag = ref<boolean>(true);
 
   type ChatData = {
     id?: number;
@@ -14,11 +17,14 @@
 
   // Fetch chat data
   const fetchChatData = async () => {
+    fetchChatDataFlag.value = false;
+
     // Fetch from supabase
     const { data, error } = await supabase.from("chat").select("*");
     if (error) {
       console.error("Error fetching chat data:", error.message);
     } else {
+      // Get only the user's chat history
       const userChatHistory = data.filter((item: any) => {
         return (
           item.user_name === store.userName || item.user_name === "Guest User"
@@ -43,6 +49,11 @@
 
       // Set the latest chat history
       chatHistoryData.value = latestChatHistory as ChatData[];
+
+      // Set the main chat data
+      chatMainData.value = data as ChatData[];
+
+      fetchChatDataFlag.value = true;
     }
   };
 
@@ -119,10 +130,23 @@
 <template>
   <div class="main">
     <Splitter class="chat">
-      <SplitterPanel :size="25" :minSize="20">
+      <SplitterPanel :size="35" :minSize="20">
         <div class="chat-history">
           <p class="title">メッセージ履歴</p>
-          <div v-if="chatHistoryData?.length" class="overflow">
+          <!-- skelton -->
+          <!-- <ul v-if="fetchChatDataFlag" class="skelton-list">
+            <li class="skelton-list__item">
+              <div class="item">
+                <Skeleton width="20%" class="skelton"></Skeleton>
+                <Skeleton width="100%" class="skelton"></Skeleton>
+                <Skeleton width="100%" class="skelton"></Skeleton>
+              </div>
+            </li>
+          </ul> -->
+          <div
+            v-if="chatHistoryData?.length && fetchChatDataFlag"
+            class="overflow"
+          >
             <div class="overflow-inner">
               <Panel
                 v-for="{ id, user_name, message } in chatHistoryData"
@@ -136,19 +160,35 @@
               </Panel>
             </div>
           </div>
-          <p v-else class="no-history">チャット履歴はありません。</p>
+          <p
+            v-else-if="!chatHistoryData?.length && fetchChatDataFlag"
+            class="no-history"
+          >
+            チャット履歴はありません。
+          </p>
         </div>
       </SplitterPanel>
-      <SplitterPanel :size="75">
+      <SplitterPanel :size="65" :minSize="40">
         <div class="chat-main">
           <p class="title">メッセージ</p>
-          <p class="no-selected">トークルームがまだ選択されていません。</p>
-          <div class="overflow">
+          <div
+            v-if="chatMainData?.length && fetchChatDataFlag"
+            class="overflow"
+          >
             <div
-              v-for="{ id, user_name, message } in chatHistoryData"
+              v-for="{ id, user_name, message } in chatMainData"
               class="chat-card"
-            ></div>
+            >
+              <p class="name">{{ user_name }}</p>
+              <p class="message">{{ message }}</p>
+            </div>
           </div>
+          <p
+            v-else-if="!chatMainData?.length && fetchChatDataFlag"
+            class="no-selected"
+          >
+            トークルームがまだ選択されていません。
+          </p>
           <div class="input-field">
             <div class="input-field__inner">
               <Textarea v-model="inputVal" rows="1" cols="30" />
@@ -175,6 +215,31 @@
         font-weight: 600;
         margin: 0 0 20px 0;
         color: $primary;
+      }
+
+      .skelton-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        padding: 0px 10px 10px 0px;
+
+        .skelton-list__item {
+          margin-bottom: 10px;
+
+          .item {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: $bgColor;
+
+            .skelton {
+              margin-bottom: 10px;
+
+              &:last-child {
+                margin-bottom: 0;
+              }
+            }
+          }
+        }
       }
 
       .overflow {
@@ -227,20 +292,31 @@
 
       .overflow {
         overflow-y: scroll;
-        height: calc(100vh - 315px);
+        height: calc(100vh - 250px);
 
-        .card {
+        .chat-card {
+          width: 45%;
+          margin: 0 0 0 auto;
           margin-bottom: 10px;
           border-radius: 5px;
+          padding: 10px;
+          background-color: $bgColor;
           cursor: pointer;
 
-          &:hover {
-            background-color: $buttonFocusColor;
+          // &:hover {
+          //   background-color: $buttonFocusColor;
+          // }
+
+          .name {
+            font-size: 12px;
+            margin: 0 0 5px 0;
+            font-weight: 600;
           }
 
           .message {
             margin: 0;
             font-size: 12px;
+            line-height: 1.6;
           }
         }
       }
