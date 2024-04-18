@@ -1,9 +1,9 @@
 <script setup lang="ts"></script>
 
 <template>
-  <section>
-    <h1>Connectify ~setting~</h1>
-  </section>
+  <div class="main">
+    <h1>Connectify ~settings~</h1>
+  </div>
 </template>
 
 <style lang="scss"></style>
