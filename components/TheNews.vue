@@ -140,13 +140,13 @@
 
         h2 {
           margin: 0;
-          font-size: 18px;
+          font-size: 16px;
           margin-bottom: 5px;
         }
 
         p {
           margin: 0;
-          font-size: 15px;
+          font-size: 14px;
         }
       }
     }
