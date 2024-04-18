@@ -4,7 +4,7 @@
     offset: number;
   }>();
 
-  const PER_PAGE = 5;
+  const PER_PAGE = 3;
   const pageCount = Math.ceil(props.totalCount / PER_PAGE);
 
   const emit = defineEmits(["pageClick"]);

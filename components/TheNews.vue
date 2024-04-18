@@ -40,7 +40,7 @@
   // pagination logic
   const emit = defineEmits(["pageClick"]);
   const onPageChange = (index: number) => {
-    offset.value = (index - 1) * 5;
+    offset.value = (index - 1) * 3;
   };
 
   /******************************************
@@ -80,7 +80,7 @@
       const res = await client.get({
         endpoint: "news",
         queries: {
-          limit: 5,
+          limit: 3,
           offset: offset.value,
         },
       });
