@@ -38,15 +38,10 @@
     router.push("/login");
   };
 
-  let userName = ref<string>("");
-  let userEmail = ref<string>("");
-  let userImage = ref<string>("");
-
   onMounted(() => {
     getUserInfoOfGoogle(supabase).then((res: any) => {
-      userName.value = res.userName.value;
-      userEmail.value = res.userEmail.value;
-      userImage.value = res.userImage.value;
+      store.userImage = res.userImage.value;
+      store.userEmail = res.userEmail.value;
       store.userName = res.userName.value;
     });
 
@@ -87,7 +82,7 @@
         </template>
       </Breadcrumb>
       <div class="user-icon" @click="clickProfileIcon">
-        <img :src="userImage" alt="user" />
+        <img :src="store.userImage" alt="user" />
       </div>
       <Transition name="slide-down-up">
         <div v-if="profileCardDisplayFlag" class="card">
@@ -95,15 +90,15 @@
             <div class="card-inner__top">
               <div class="card-inner__top-left">
                 <div class="picture">
-                  <NuxtImg :src="userImage" alt="user" />
+                  <NuxtImg :src="store.userImage" alt="user" />
                 </div>
               </div>
               <div class="card-inner__top-right">
                 <div class="name">
-                  <p>{{ userName }}</p>
+                  <p>{{ store.userName }}</p>
                 </div>
                 <div class="email">
-                  <p>{{ userEmail }}</p>
+                  <p>{{ store.userEmail }}</p>
                 </div>
               </div>
             </div>

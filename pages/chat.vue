@@ -1,20 +1,31 @@
 <script setup lang="ts">
-  const chatHistoryData = ref<ChatData[]>();
-  const chatMainData = ref<ChatData[]>();
   const supabase = useSupabaseClient();
   const store = useMainStore();
 
-  const fetchChatDataFlag = ref<boolean>(true);
-
+  /****************************
+   * type
+   ***************************/
   type ChatData = {
     id?: number;
     created_at?: string;
     user_name: string;
     message: string;
+    user_email?: string;
   };
 
+  /****************************
+   * variables
+   ***************************/
+  const chatPartner = ref<string>("");
+  const chatHistoryData = ref<ChatData[]>();
+  const chatMainData = ref<ChatData[]>();
+  const fetchChatDataFlag = ref<boolean>(true);
   const inputVal = ref<string>("");
+  const chatMainView = ref<HTMLElement | null>(null);
 
+  /****************************
+   * fetch data
+   ***************************/
   // Fetch chat data
   const fetchChatData = async () => {
     fetchChatDataFlag.value = false;
@@ -24,52 +35,27 @@
     if (error) {
       console.error("Error fetching chat data:", error.message);
     } else {
-      // Get only the user's chat history
-      const userChatHistory = data.filter((item: any) => {
+      // Set the main chat data and sort by create_at
+      chatMainData.value = data?.sort((a: ChatData, b: ChatData) => {
         return (
-          item.user_name === store.userName || item.user_name === "Guest User"
+          new Date(a.created_at!).getTime() - new Date(b.created_at!).getTime()
         );
       });
-
-      // Get only the latest history
-      const latestChatHistory = userChatHistory.reduce((acc: any, cur: any) => {
-        const found = acc.find((item: any) => item.user_name === cur.user_name);
-        if (found) {
-          if (new Date(found.created_at) < new Date(cur.created_at)) {
-            return acc.map((item: any) =>
-              item.user_name === cur.user_name ? cur : item
-            );
-          } else {
-            return acc;
-          }
-        } else {
-          return [...acc, cur];
-        }
-      }, []);
-
-      // Set the latest chat history
-      chatHistoryData.value = latestChatHistory as ChatData[];
-
-      // Set the main chat data
-      chatMainData.value = data as ChatData[];
 
       fetchChatDataFlag.value = true;
     }
   };
 
-  // Click chat submit button
-  const clickChatSubmitBtn = async () => {
-    const user_name = store.userName || "Guest User";
-    const message = inputVal.value;
-    await insertChatData(user_name, message);
-    inputVal.value = "";
-  };
-
   // Insert chat data
-  const insertChatData = async (user_name: string, message: string) => {
+  const insertChatData = async (
+    user_name: string,
+    message: string,
+    user_email: string
+  ) => {
     const chatData: ChatData = {
       user_name,
       message,
+      user_email,
     };
 
     const { data, error } = await supabase
@@ -80,7 +66,7 @@
     if (error) {
       console.error("Error inserting chat data:", error.message);
     } else {
-      await fetchChatData();
+      console.log("Chat data inserted successfully:", data);
     }
   };
 
@@ -97,18 +83,29 @@
             table: "chat",
           },
           (payload) => {
-            // データ登録
+            // insert
             if (payload.eventType === "INSERT") {
-              const { created_at, id, message, user_name } = payload.new;
-              chatHistoryData.value = [
-                ...(chatHistoryData.value ?? []),
-                {
-                  id,
-                  created_at,
-                  user_name,
-                  message,
-                },
-              ];
+              const { id, created_at, message, user_name, user_email } =
+                payload.new;
+              chatMainData.value?.push({
+                id,
+                created_at,
+                message,
+                user_name,
+                user_email,
+              });
+
+              setTimeout(() => {
+                scrollToBottom();
+              }, 500);
+            }
+
+            // delete
+            if (payload.eventType === "DELETE") {
+              const { id } = payload.old;
+              chatMainData.value = chatMainData.value?.filter(
+                (item) => item.id !== id
+              );
             }
           }
         )
@@ -121,9 +118,27 @@
     }
   };
 
-  // onMounted
+  // Click chat submit button
+  const clickChatSubmitBtn = async () => {
+    insertChatData(store.userName!, inputVal.value, store.userEmail!);
+    inputVal.value = "";
+  };
+
+  // Scroll to bottom of chat
+  const scrollToBottom = () => {
+    chatMainView.value?.scrollTo({
+      top: chatMainView.value?.scrollHeight,
+      behavior: "smooth",
+    });
+  };
+
+  /****************************
+   * lifecycle
+   ***************************/
   onMounted(async () => {
     await fetchChatData();
+    fetchRealtimeData();
+    scrollToBottom();
   });
 </script>
 
@@ -149,9 +164,14 @@
           >
             <div class="overflow-inner">
               <Panel
-                v-for="{ id, user_name, message } in chatHistoryData"
+                v-for="{
+                  id,
+                  user_name,
+                  user_email,
+                  message,
+                } in chatHistoryData"
                 :key="id"
-                :header="user_name"
+                :header="user_email"
                 class="card"
               >
                 <p class="message">
@@ -174,12 +194,15 @@
           <div
             v-if="chatMainData?.length && fetchChatDataFlag"
             class="overflow"
+            ref="chatMainView"
           >
             <div
-              v-for="{ id, user_name, message } in chatMainData"
+              v-for="{ id, user_name, user_email, message } in chatMainData"
+              :key="id"
               class="chat-card"
+              :class="{ 'user-chat': user_email === store.userEmail }"
             >
-              <p class="name">{{ user_name }}</p>
+              <p class="name">{{ user_email }}</p>
               <p class="message">{{ message }}</p>
             </div>
           </div>
@@ -296,12 +319,16 @@
 
         .chat-card {
           width: 45%;
-          margin: 0 0 0 auto;
-          margin-bottom: 10px;
+          margin: 0 auto 10px 0;
           border-radius: 5px;
           padding: 10px;
           background-color: $bgColor;
           cursor: pointer;
+
+          &.user-chat {
+            margin: 0 0 10px auto;
+            background-color: aliceblue;
+          }
 
           // &:hover {
           //   background-color: $buttonFocusColor;
