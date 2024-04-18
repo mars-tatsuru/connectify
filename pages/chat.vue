@@ -22,6 +22,7 @@
   const fetchChatDataFlag = ref<boolean>(true);
   const inputVal = ref<string>("");
   const chatMainView = ref<HTMLElement | null>(null);
+  const inputField = ref<HTMLElement | null>(null);
 
   /****************************
    * fetch data
@@ -119,11 +120,36 @@
   };
 
   // Click chat submit button
-  const clickChatSubmitBtn = async () => {
-    insertChatData(store.userName!, inputVal.value, store.userEmail!);
-    inputVal.value = "";
+  const clickChatSubmitBtn = async (e: MouseEvent | KeyboardEvent) => {
+    const className = (e.target as HTMLElement)?.classList.value;
+    console.log(className);
+
+    if (
+      e.ctrlKey ||
+      e.metaKey ||
+      className.includes("p-button-icon pi pi-send")
+    ) {
+      // Remove leading whitespace
+      inputVal.value = inputVal.value.trim();
+      // If the input is empty, return
+      if (!inputVal.value) return;
+
+      // Insert chat data
+      insertChatData(store.userName!, inputVal.value, store.userEmail!);
+
+      // unfocus the input field
+      if (inputField.value) {
+        inputField.value.blur();
+      }
+
+      // Delete the input value
+      inputVal.value = "";
+    }
   };
 
+  /****************************
+   * helper
+   ***************************/
   // Scroll to bottom of chat
   const scrollToBottom = () => {
     chatMainView.value?.scrollTo({
@@ -145,7 +171,7 @@
 <template>
   <div class="main">
     <Splitter class="chat">
-      <SplitterPanel :size="35" :minSize="20">
+      <SplitterPanel :size="25" :minSize="20">
         <div class="chat-history">
           <p class="title">メッセージ履歴</p>
           <!-- skelton -->
@@ -188,7 +214,7 @@
           </p>
         </div>
       </SplitterPanel>
-      <SplitterPanel :size="65" :minSize="40">
+      <SplitterPanel :size="75" :minSize="40">
         <div class="chat-main">
           <p class="title">メッセージ</p>
           <div
@@ -214,8 +240,22 @@
           </p>
           <div class="input-field">
             <div class="input-field__inner">
-              <Textarea v-model="inputVal" rows="1" cols="30" />
-              <Button label="" icon="pi pi-send" @click="clickChatSubmitBtn" />
+              <textarea
+                v-model="inputVal"
+                rows="1"
+                cols="30"
+                class="textarea"
+                ref="inputField"
+                maxlength="500"
+                @keydown.enter.meta.exact="clickChatSubmitBtn"
+              ></textarea>
+              <Button
+                class="submit-button"
+                label=""
+                icon="pi pi-send"
+                @click="clickChatSubmitBtn"
+                :disabled="!inputVal"
+              />
             </div>
           </div>
         </div>
@@ -358,17 +398,42 @@
 
         &__inner {
           width: 100%;
+          position: relative;
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: flex-end;
           gap: 10px;
 
           textarea {
-            width: 95%;
+            width: 100%;
+            height: 40px;
             border: 1px solid $borderColor;
             border-radius: 5px;
+            overflow: hidden;
             padding: 10px;
             resize: none;
+            transition: height 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+
+            &:focus {
+              height: 130px;
+              overflow-y: scroll;
+              transition: height 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+            }
+          }
+
+          .submit-button {
+            position: absolute;
+            z-index: 2;
+            bottom: 0;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: transparent;
+            color: #333;
+            font-size: 20px;
+            cursor: pointer;
+            border: none;
           }
         }
       }
