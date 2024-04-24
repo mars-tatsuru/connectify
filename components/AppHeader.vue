@@ -1,15 +1,21 @@
 <script setup lang="ts">
-  const supabase = useSupabaseClient();
   import {
     getUserInfoOfGoogle,
     getOtherUserInfo,
   } from "@/utils/operationUserInfo";
+  const supabase = useSupabaseClient();
   const store = useMainStore();
   const router = useRouter();
   const route = useRoute();
 
+  /****************************
+   * type
+   ***************************/
   type BreadcrumbItem = { icon?: string; label?: string; route?: string };
 
+  /****************************
+   * variables for breadcrumb
+   ***************************/
   const home = ref<BreadcrumbItem>({
     icon: "pi pi-home",
     route: "/",
@@ -32,6 +38,9 @@
     }
   );
 
+  /********************************************************
+   * variables and functions for account
+   *******************************************************/
   const profileCardDisplayFlag = ref<boolean>(false);
   const clickProfileIcon = () => {
     profileCardDisplayFlag.value = !profileCardDisplayFlag.value;
@@ -41,6 +50,9 @@
     router.push("/login");
   };
 
+  /*******************************
+   * lifecycle
+   ******************************/
   onMounted(async () => {
     getUserInfoOfGoogle(supabase).then((res: any) => {
       store.userImage = res.userImage.value;
