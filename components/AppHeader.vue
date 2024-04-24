@@ -61,7 +61,7 @@
     });
 
     getOtherUserInfo(supabase).then((res: any) => {
-      store.authUserInfo = res;
+      store.authUserInfo = res.data;
     });
 
     // for breadcrumb

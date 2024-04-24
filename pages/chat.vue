@@ -23,6 +23,8 @@
   const inputVal = ref<string>("");
   const chatMainView = ref<HTMLElement | null>(null);
   const inputField = ref<HTMLElement | null>(null);
+  const dialogVisible = ref<boolean>(false);
+  const selectedUser = ref<any>(null);
 
   /****************************
    * fetch data
@@ -151,7 +153,6 @@
       inputVal.value = "";
     }
   };
-
   /****************************
    * helper
    ***************************/
@@ -196,7 +197,45 @@
     <Splitter class="chat">
       <SplitterPanel :size="25" :minSize="20">
         <div class="chat-history">
-          <p class="title">メッセージ履歴</p>
+          <div class="chat-history__header">
+            <p class="title">メッセージ履歴</p>
+            <Button
+              class="create-btn"
+              label="ルーム作成"
+              @click="dialogVisible = true"
+            />
+          </div>
+          <Dialog
+            v-model:visible="dialogVisible"
+            modal
+            header="相手を選択する"
+            :style="{ width: '25rem' }"
+          >
+            <span>下記ドロップダウンから相手を選択してください。</span>
+            <Dropdown
+              v-model="selectedUser"
+              :options="store.authUserInfo"
+              filter
+              optionLabel="name"
+              placeholder="選択してください。"
+              style="width: 100%"
+            >
+              <template #value="slotProps">
+                <div v-if="slotProps.value" style="display: flex">
+                  <div>{{ slotProps.value.email }}</div>
+                </div>
+                <span v-else>
+                  {{ slotProps.placeholder }}
+                </span>
+              </template>
+              <template #option="slotProps">
+                <div style="display: flex">
+                  <div>{{ slotProps.option.email }}</div>
+                </div>
+              </template>
+            </Dropdown>
+            <Button class="create-btn" label="作成" />
+          </Dialog>
           <!-- skelton -->
           <!-- <ul v-if="fetchChatDataFlag" class="skelton-list">
             <li class="skelton-list__item">
@@ -296,11 +335,24 @@
     .chat-history {
       padding: 20px;
 
-      .title {
-        font-size: 16px;
-        font-weight: 600;
-        margin: 0 0 20px 0;
-        color: $primary;
+      &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+
+        .title {
+          font-size: 16px;
+          font-weight: 600;
+          color: $primary;
+          margin: 0;
+        }
+
+        .create-btn {
+          font-size: 12px;
+          padding: 5px 15px;
+          border-radius: 3px;
+        }
       }
 
       .skelton-list {
