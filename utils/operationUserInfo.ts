@@ -19,36 +19,8 @@ export const getUserInfoOfGoogle = async (supabaseClient: any) => {
   };
 };
 
-/**********************************
- * get userInfo from supabase
- **********************************/
-export const getUserInfo = async (supabaseClient: any) => {
-  let { data: userInfo, error } = await supabaseClient
-    .from("userInfo")
-    .select("*");
-  return userInfo;
-};
+export const getOtherUserInfo = async (supabaseClient: any) => {
+  const { data, error } = await supabaseClient.from("users").select("*");
 
-/**********************************
- * post userInfo to supabase
- **********************************/
-export const addUserInfo = async (
-  supabaseClient: any,
-  name: unknown | string,
-  email: unknown | string
-) => {
-  const { data, error } = await supabaseClient
-    .from("userInfo")
-    .insert([{ user_name: name, user_email: email }])
-    .select();
-};
-
-/**********************************
- * delete userInfo to supabase
- **********************************/
-export const deleteUserInfo = async (
-  supabaseClient: any,
-  id: unknown | number
-) => {
-  const { error } = await supabaseClient.from("userInfo").delete().eq("id", id);
+  return { data };
 };

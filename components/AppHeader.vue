@@ -1,6 +1,9 @@
 <script setup lang="ts">
   const supabase = useSupabaseClient();
-  import { getUserInfoOfGoogle } from "@/utils/operationUserInfo";
+  import {
+    getUserInfoOfGoogle,
+    getOtherUserInfo,
+  } from "@/utils/operationUserInfo";
   const store = useMainStore();
   const router = useRouter();
   const route = useRoute();
@@ -38,11 +41,15 @@
     router.push("/login");
   };
 
-  onMounted(() => {
+  onMounted(async () => {
     getUserInfoOfGoogle(supabase).then((res: any) => {
       store.userImage = res.userImage.value;
       store.userEmail = res.userEmail.value;
       store.userName = res.userName.value;
+    });
+
+    getOtherUserInfo(supabase).then((res: any) => {
+      store.authUserInfo = res;
     });
 
     // for breadcrumb
