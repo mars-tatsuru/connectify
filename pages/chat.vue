@@ -385,7 +385,7 @@
 
         &-inner {
           height: calc(100vh - 160px);
-          padding: 0px 10px 10px 0px;
+          // padding: 0px 10px 10px 0px;
 
           .card {
             width: 100%;
