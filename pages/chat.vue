@@ -208,17 +208,16 @@
           <Dialog
             v-model:visible="dialogVisible"
             modal
-            header="相手を選択する"
-            :style="{ width: '25rem' }"
+            header="相手を選択してください"
+            class="dialog"
           >
-            <span>下記ドロップダウンから相手を選択してください。</span>
             <Dropdown
               v-model="selectedUser"
               :options="store.authUserInfo"
               filter
               optionLabel="name"
               placeholder="選択してください。"
-              style="width: 100%"
+              class="dialog-dropdown"
             >
               <template #value="slotProps">
                 <div v-if="slotProps.value" style="display: flex">
@@ -234,7 +233,11 @@
                 </div>
               </template>
             </Dropdown>
-            <Button class="create-btn" label="作成" />
+            <Button
+              class="dialog-createBtn"
+              label="作成"
+              :disabled="selectedUser === null"
+            />
           </Dialog>
           <!-- skelton -->
           <!-- <ul v-if="fetchChatDataFlag" class="skelton-list">
@@ -513,6 +516,23 @@
           }
         }
       }
+    }
+  }
+
+  //for primevue dialog
+
+  .dialog {
+    width: 30%;
+    min-width: 400px;
+
+    .dialog-dropdown {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .dialog-createBtn {
+      width: 100%;
+      margin-top: 10px;
     }
   }
 </style>
