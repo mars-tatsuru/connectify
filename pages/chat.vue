@@ -208,13 +208,14 @@
           <Dialog
             v-model:visible="dialogVisible"
             modal
+            dismissableMask
+            :draggable="false"
             header="相手を選択してください"
             class="dialog"
           >
             <Dropdown
               v-model="selectedUser"
               :options="store.authUserInfo"
-              filter
               optionLabel="name"
               placeholder="選択してください。"
               class="dialog-dropdown"
