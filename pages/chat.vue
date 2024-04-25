@@ -13,18 +13,25 @@
     user_email?: string;
   };
 
+  type SelectedUser = {
+    id: number;
+    email: string;
+    name: string;
+  };
+
   /****************************
    * variables
    ***************************/
   const chatPartner = ref<string>("");
-  const chatHistoryData = ref<ChatData[]>();
-  const chatMainData = ref<ChatData[]>();
+  const chatHistoryData = ref<ChatData[]>([]);
+  const chatRoomList = ref<SelectedUser[]>([]);
+  const chatMainData = ref<ChatData[]>([]);
   const fetchChatDataFlag = ref<boolean>(true);
   const inputVal = ref<string>("");
   const chatMainView = ref<HTMLElement | null>(null);
   const inputField = ref<HTMLElement | null>(null);
   const dialogVisible = ref<boolean>(false);
-  const selectedUser = ref<any>(null);
+  const selectedUser = ref<SelectedUser>();
 
   /****************************
    * fetch data
@@ -46,7 +53,7 @@
       });
 
       // Set the history data that is last message of partner
-      chatHistoryDataHandler();
+      // chatHistoryDataHandler();
 
       fetchChatDataFlag.value = true;
     }
@@ -101,7 +108,7 @@
                 user_email,
               });
 
-              chatHistoryDataHandler();
+              // chatHistoryDataHandler();
 
               setTimeout(() => {
                 scrollToBottom();
@@ -165,21 +172,26 @@
   };
 
   const chatHistoryDataHandler = () => {
-    chatHistoryData.value = chatMainData.value
-      ?.filter((item) => item.user_email !== store.userEmail)
-      .sort((a: ChatData, b: ChatData) => {
-        return (
-          new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime()
-        );
-      })
-      .reduce((acc: ChatData[], current: ChatData) => {
-        const x = acc.find((item) => item.user_email === current.user_email);
-        if (!x) {
-          return acc.concat([current]);
-        } else {
-          return acc;
-        }
-      }, [] as ChatData[]);
+    // chatHistoryData.value = chatMainData.value
+    //   ?.filter((item) => item.user_email !== store.userEmail)
+    //   .sort((a: ChatData, b: ChatData) => {
+    //     return (
+    //       new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime()
+    //     );
+    //   })
+    //   .reduce((acc: ChatData[], current: ChatData) => {
+    //     const x = acc.find((item) => item.user_email === current.user_email);
+    //     if (!x) {
+    //       return acc.concat([current]);
+    //     } else {
+    //       return acc;
+    //     }
+    //   }, [] as ChatData[]);
+  };
+
+  const createChatRoom = (selectedUser: SelectedUser) => {
+    chatRoomList.value?.push(selectedUser);
+    dialogVisible.value = false;
   };
 
   /****************************
@@ -238,6 +250,7 @@
               class="dialog-createBtn"
               label="作成"
               :disabled="selectedUser === null"
+              @click="createChatRoom(selectedUser!)"
             />
           </Dialog>
           <!-- skelton -->
@@ -251,29 +264,24 @@
             </li>
           </ul> -->
           <div
-            v-if="chatHistoryData?.length && fetchChatDataFlag"
+            v-if="chatRoomList?.length && fetchChatDataFlag"
             class="overflow"
           >
             <div class="overflow-inner">
               <Panel
-                v-for="{
-                  id,
-                  user_name,
-                  user_email,
-                  message,
-                } in chatHistoryData"
+                v-for="{ id, name, email } in chatRoomList"
                 :key="id"
-                :header="user_email"
+                :header="email"
                 class="card"
               >
                 <p class="message">
-                  {{ message }}
+                  {{ name }}
                 </p>
               </Panel>
             </div>
           </div>
           <p
-            v-else-if="!chatHistoryData?.length && fetchChatDataFlag"
+            v-else-if="!chatRoomList?.length && fetchChatDataFlag"
             class="no-history"
           >
             チャット履歴はありません。
