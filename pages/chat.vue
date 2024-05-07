@@ -11,20 +11,29 @@
     user_name: string;
     message: string;
     user_email?: string;
+    room_name?: string;
+  };
+
+  type ChatRoomList = {
+    id: number;
+    create_at: string;
+    room_name: string;
   };
 
   type SelectedUser = {
     id: number;
-    email: string;
     name: string;
+    email: string;
+  };
+
+  type ChatRoom = {
+    room_name: string;
   };
 
   /****************************
    * variables
    ***************************/
-  const chatPartner = ref<string>("");
-  const chatHistoryData = ref<ChatData[]>([]);
-  const chatRoomList = ref<SelectedUser[]>([]);
+  const chatRoomList = ref<ChatRoomList[]>([]);
   const chatMainData = ref<ChatData[]>([]);
   const fetchChatDataFlag = ref<boolean>(true);
   const inputVal = ref<string>("");
@@ -32,9 +41,10 @@
   const inputField = ref<HTMLElement | null>(null);
   const dialogVisible = ref<boolean>(false);
   const selectedUser = ref<SelectedUser>();
+  const currentRoom = ref<string>("");
 
   /****************************
-   * fetch data
+   * fetch data for chat message
    ***************************/
   // Fetch chat data
   const fetchChatData = async () => {
@@ -43,17 +53,17 @@
     // Fetch from supabase
     const { data, error } = await supabase.from("chat").select("*");
     if (error) {
-      console.error("Error fetching chat data:", error.message);
+      // console.error("Error fetching chat data:", error.message);
     } else {
       // Set the main chat data and sort by create_at
-      chatMainData.value = data?.sort((a: ChatData, b: ChatData) => {
-        return (
-          new Date(a.created_at!).getTime() - new Date(b.created_at!).getTime()
-        );
-      });
-
-      // Set the history data that is last message of partner
-      // chatHistoryDataHandler();
+      chatMainData.value = data
+        .filter((item: ChatData) => item.room_name?.includes(currentRoom.value))
+        .sort((a: ChatData, b: ChatData) => {
+          return (
+            new Date(a.created_at!).getTime() -
+            new Date(b.created_at!).getTime()
+          );
+        });
 
       fetchChatDataFlag.value = true;
     }
@@ -69,6 +79,7 @@
       user_name,
       message,
       user_email,
+      room_name: currentRoom.value,
     };
 
     const { data, error } = await supabase
@@ -77,9 +88,9 @@
       .select();
 
     if (error) {
-      console.error("Error inserting chat data:", error.message);
+      // console.error("Error inserting chat data:", error.message);
     } else {
-      console.log("Chat data inserted successfully:", data);
+      // console.log("Chat data inserted successfully:", data);
     }
   };
 
@@ -129,14 +140,13 @@
       // リスナーの解除
       return () => supabase.channel("connectify").unsubscribe();
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   };
 
-  // Click chat submit button
+  // click chat submit button
   const clickChatSubmitBtn = async (e: MouseEvent | KeyboardEvent) => {
     const className = (e.target as HTMLElement)?.classList.value;
-    console.log(className);
 
     if (
       e.ctrlKey ||
@@ -160,6 +170,47 @@
       inputVal.value = "";
     }
   };
+
+  /****************************
+   * fetch data for chat room
+   ***************************/
+  // Create chat room
+  const createChatRoom = async (selectedUser: SelectedUser) => {
+    dialogVisible.value = false;
+
+    const chatRoomData: ChatRoom = {
+      room_name: `${selectedUser.email}-${store.userEmail}`,
+    };
+
+    const { data, error } = await supabase
+      .from("rooms")
+      .insert(chatRoomData as any);
+
+    if (error) {
+      // console.error("Error inserting chat room data:");
+    } else {
+      // console.log("Chat room data inserted successfully:");
+      getChatRoomList(store.userEmail!);
+    }
+  };
+
+  // get chat room list
+  const getChatRoomList = async (userEmail?: string) => {
+    const { data, error } = await supabase.from("rooms").select("*");
+    if (error) {
+      // console.error("Error fetching chat room data:", error.message);
+    } else {
+      chatRoomList.value = data as ChatRoomList[];
+
+      // filter chat room list
+      if (userEmail) {
+        chatRoomList.value = chatRoomList.value?.filter((item) =>
+          item.room_name.includes(userEmail)
+        );
+      }
+    }
+  };
+
   /****************************
    * helper
    ***************************/
@@ -171,36 +222,32 @@
     });
   };
 
-  const chatHistoryDataHandler = () => {
-    // chatHistoryData.value = chatMainData.value
-    //   ?.filter((item) => item.user_email !== store.userEmail)
-    //   .sort((a: ChatData, b: ChatData) => {
-    //     return (
-    //       new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime()
-    //     );
-    //   })
-    //   .reduce((acc: ChatData[], current: ChatData) => {
-    //     const x = acc.find((item) => item.user_email === current.user_email);
-    //     if (!x) {
-    //       return acc.concat([current]);
-    //     } else {
-    //       return acc;
-    //     }
-    //   }, [] as ChatData[]);
-  };
-
-  const createChatRoom = (selectedUser: SelectedUser) => {
-    chatRoomList.value?.push(selectedUser);
-    dialogVisible.value = false;
+  // click current room
+  const clickCurrentRoom = (roomName: string) => {
+    currentRoom.value = roomName;
+    // fetchChatData();
+    getChatRoomList(store.userEmail);
   };
 
   /****************************
    * lifecycle
    ***************************/
   onMounted(async () => {
-    await fetchChatData();
-    fetchRealtimeData();
-    scrollToBottom();
+    if (store.userEmail) {
+      await getChatRoomList(store.userEmail);
+    }
+  });
+
+  watchEffect(async () => {
+    if (store.userEmail) {
+      getChatRoomList(store.userEmail);
+    }
+
+    if (currentRoom.value !== "") {
+      await fetchChatData();
+      fetchRealtimeData();
+      scrollToBottom();
+    }
   });
 </script>
 
@@ -254,7 +301,7 @@
             />
           </Dialog>
           <!-- skelton -->
-          <!-- <ul v-if="fetchChatDataFlag" class="skelton-list">
+          <ul v-if="!fetchChatDataFlag" class="skelton-list">
             <li class="skelton-list__item">
               <div class="item">
                 <Skeleton width="20%" class="skelton"></Skeleton>
@@ -262,28 +309,25 @@
                 <Skeleton width="100%" class="skelton"></Skeleton>
               </div>
             </li>
-          </ul> -->
+          </ul>
           <div
             v-if="chatRoomList?.length && fetchChatDataFlag"
             class="overflow"
           >
             <div class="overflow-inner">
               <Panel
-                v-for="{ id, name, email } in chatRoomList"
+                v-for="{ id, room_name } in chatRoomList"
                 :key="id"
-                :header="email"
+                :header="`${ room_name.replace(store.userEmail!, '').replace(/^-|-$/g, '') }`"
                 class="card"
+                :class="{ 'selected-room': room_name === currentRoom }"
+                @click="clickCurrentRoom(room_name)"
               >
-                <p class="message">
-                  {{ name }}
-                </p>
+                <p class="message">ここに最新のメッセージが表示されます。</p>
               </Panel>
             </div>
           </div>
-          <p
-            v-else-if="!chatRoomList?.length && fetchChatDataFlag"
-            class="no-history"
-          >
+          <p v-else-if="chatRoomList?.length === 0" class="no-history">
             チャット履歴はありません。
           </p>
         </div>
@@ -307,10 +351,20 @@
             </div>
           </div>
           <p
-            v-else-if="!chatMainData?.length && fetchChatDataFlag"
+            v-else-if="
+              !chatMainData?.length && fetchChatDataFlag && !currentRoom
+            "
             class="no-selected"
           >
             トークルームがまだ選択されていません。
+          </p>
+          <p
+            v-else-if="
+              !chatMainData?.length && fetchChatDataFlag && currentRoom
+            "
+            class="no-selected"
+          >
+            メッセージがまだありません。
           </p>
           <div class="input-field">
             <div class="input-field__inner">
@@ -322,6 +376,7 @@
                 ref="inputField"
                 maxlength="500"
                 @keydown.enter.meta.exact="clickChatSubmitBtn"
+                :disabled="!currentRoom"
               ></textarea>
               <Button
                 class="submit-button"
@@ -405,6 +460,10 @@
             border-radius: 5px;
             cursor: pointer;
             overflow-wrap: break-word;
+
+            &.selected-room {
+              border: 1px solid $primary;
+            }
 
             &:hover {
               background-color: $buttonFocusColor;
